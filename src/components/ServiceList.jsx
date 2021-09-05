@@ -1,49 +1,31 @@
-import React from 'react'
-import {useSelector, useDispatch} from 'react-redux';
-import {removeService, EditService, clearService, filterService} from '../actions/actionCreators';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { removeService, EditService } from "../actions/actionCreators";
 
 function ServiceList() {
-  const items = useSelector(state => state.serviceList);
-  const formState = useSelector(state => state.serviceAdd);
+  const items = useSelector((state) => state.serviceList);
   const dispatch = useDispatch();
 
-
-
-
-  const handleRemove = id => {
-    // очищаем форму ввода если удаляем редактируемый элемент
-    if(formState.name===items.find((el)=>el.id===id).name)
-    {
-      dispatch(clearService());
-    }
+  const handleRemove = (id) => {
     dispatch(removeService(id));
-  }
+  };
 
-  const handleEdit = (name,price) => {
-    dispatch(EditService(name,price));
-  }
-
-  const filterHandler = (evt) => {
-    dispatch(filterService(evt.target.value));
-  }
-
+  const handleEdit = (obj) => {
+    const { id, name, price } = obj;
+    dispatch(EditService(id, name, price));
+  };
 
   return (
-    <>
-    <span>Фильтр</span>
-    <input name="filter" onChange={filterHandler}></input>
     <ul>
-      {items.map(o => (
-        <li key={o.id}>
+      {items.map((o) => (
+        <li key={o.id} className={o.show ? "li_item" : "hidden"}>
           {o.name} {o.price}
+          <button onClick={() => handleEdit(o)}>✎</button>
           <button onClick={() => handleRemove(o.id)}>✕</button>
-          <button onClick={() => handleEdit(o.name, o.price)}>✎</button>
-        </li>))
-      }
+        </li>
+      ))}
     </ul>
-    </>
-  )
+  );
 }
-
 
 export default ServiceList;
